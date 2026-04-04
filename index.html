@@ -1,194 +1,71 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Closing AI Demo</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f6f7fb;
-      color: #111;
+<script>
+let state = "hook";
+
+function analyzeIntent(input) {
+  input = input.toLowerCase();
+
+  if (input.includes("acne")) return "acne";
+  if (input.includes("aging")) return "aging";
+  if (input.includes("price") || input.includes("cheap")) return "price";
+  if (input.includes("not sure")) return "hesitation";
+
+  return "general";
+}
+
+function send() {
+  const inputEl = document.getElementById("input");
+  const chat = document.getElementById("chat");
+  const input = inputEl.value.trim();
+  if (!input) return;
+
+  const intent = analyzeIntent(input);
+  let reply = "";
+
+  // 🔥 关键：第一句话就利用用户输入
+  if (state === "hook") {
+    if (intent === "acne") {
+      reply = "Got it — acne is one of the most common issues. Has it been ongoing for a while?";
+      state = "pain";
+    } else if (intent === "aging") {
+      reply = "Understood — most people notice aging signs getting worse over time. Is that what you're seeing?";
+      state = "pain";
+    } else {
+      reply = "Got it — what’s the main thing you want to improve?";
+      state = "qualify";
     }
+  }
 
-    .hero {
-      max-width: 900px;
-      margin: 60px auto 20px;
-      padding: 0 20px;
+  else if (state === "qualify") {
+    reply = "Is your priority faster results, better quality, or lower price?";
+    state = "pain";
+  }
+
+  else if (state === "pain") {
+    reply = "That’s exactly what most people experience before they find the right solution.";
+    state = "solution";
+  }
+
+  else if (state === "solution") {
+    reply = "Based on what you told me, this is what most people choose — it targets the root cause and works quickly.";
+    state = "objection";
+  }
+
+  else if (state === "objection") {
+    if (intent === "price") {
+      reply = "I get that — but most people realize it's cheaper than trying multiple products that don’t work.";
+    } else {
+      reply = "That’s exactly what others thought before they tried it.";
     }
+    state = "close";
+  }
 
-    .hero h1 {
-      font-size: 48px;
-      margin-bottom: 16px;
-    }
+  else {
+    reply = "👉 This is the best option for you: https://example.com";
+  }
 
-    .hero p {
-      font-size: 20px;
-      color: #444;
-      max-width: 700px;
-      line-height: 1.5;
-    }
+  chat.innerHTML += "<p><b>You:</b> " + input + "</p>";
+  chat.innerHTML += "<p><b>AI:</b> " + reply + "</p>";
 
-    .badge {
-      display: inline-block;
-      padding: 8px 14px;
-      background: #111;
-      color: white;
-      border-radius: 999px;
-      font-size: 14px;
-      margin-bottom: 20px;
-    }
-
-    .product-card {
-      max-width: 900px;
-      margin: 30px auto 80px;
-      background: white;
-      border-radius: 20px;
-      padding: 30px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-    }
-
-    .product-card h2 {
-      margin-top: 0;
-      font-size: 28px;
-    }
-
-    .product-card p {
-      color: #555;
-      line-height: 1.6;
-    }
-
-    .buy-btn {
-      display: inline-block;
-      margin-top: 20px;
-      background: #111;
-      color: white;
-      text-decoration: none;
-      padding: 12px 20px;
-      border-radius: 10px;
-      font-weight: bold;
-    }
-
-    .chat-widget {
-      position: fixed;
-      right: 24px;
-      bottom: 24px;
-      width: 340px;
-      background: white;
-      border-radius: 18px;
-      box-shadow: 0 12px 40px rgba(0,0,0,0.18);
-      overflow: hidden;
-    }
-
-    .chat-header {
-      background: #111;
-      color: white;
-      padding: 14px 16px;
-      font-weight: bold;
-    }
-
-    .chat-box {
-      height: 320px;
-      overflow-y: auto;
-      padding: 14px;
-      background: #fafafa;
-    }
-
-    .msg {
-      margin-bottom: 12px;
-      line-height: 1.5;
-      font-size: 14px;
-    }
-
-    .ai {
-      color: #1d4ed8;
-    }
-
-    .user {
-      color: #111;
-    }
-
-    .chat-input {
-      display: flex;
-      gap: 8px;
-      padding: 12px;
-      border-top: 1px solid #eee;
-      background: white;
-    }
-
-    .chat-input input {
-      flex: 1;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      font-size: 14px;
-    }
-
-    .chat-input button {
-      background: #111;
-      color: white;
-      border: none;
-      padding: 10px 14px;
-      border-radius: 10px;
-      cursor: pointer;
-    }
-
-    .chat-input button:hover {
-      opacity: 0.9;
-    }
-  </style>
-</head>
-<body>
-  <div class="hero">
-    <div class="badge">Closing AI Demo</div>
-    <h1>AI That Doesn’t Just Answer — It Closes</h1>
-    <p>
-      This demo shows how a sales AI can guide shoppers toward a decision
-      instead of acting like a passive customer support bot.
-    </p>
-  </div>
-
-  <div class="product-card">
-    <h2>Acne Treatment Serum</h2>
-    <p>
-      A fast-acting skincare product designed for people struggling with
-      repeated breakouts, oily skin, and post-acne marks.
-    </p>
-    <p>
-      The goal of this page is simple: show how an AI assistant can qualify
-      intent, identify pain, handle objections, and move the visitor toward action.
-    </p>
-    <a class="buy-btn" href="https://example.com" target="_blank">Buy Now</a>
-  </div>
-
-  <div class="chat-widget">
-    <div class="chat-header">Sales AI Assistant</div>
-    <div id="chat" class="chat-box">
-      <div class="msg ai"><b>AI:</b> Hi — quick question before you browse.</div>
-    </div>
-    <div class="chat-input">
-      <input id="input" placeholder="Type here..." />
-      <button onclick="send()">Send</button>
-    </div>
-  </div>
-
-  <script>
-    let state = "hook";
-
-    function send() {
-      const inputEl = document.getElementById("input");
-      const chat = document.getElementById("chat");
-      const input = inputEl.value.trim();
-      if (!input) return;
-
-      let reply = "";
-
-      if (state === "hook") {
-        reply = "Most people here are trying to solve one thing fast — what are you looking for today?";
-        state = "qualify";
-      } else if (state === "qualify") {
-        reply = "Got it — is your priority better results, lower price, or something that works quickly?";
-        state = "pain";
-      } else if (state === "pain") {
-        reply = "That issue usually gets more frustrating if it keeps repeating. Has this been bothering you for
+  inputEl.value = "";
+}
+</script>
