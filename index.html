@@ -1,71 +1,72 @@
-<script>
-let state = "hook";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Closing AI Demo</title>
+</head>
+<body>
+  <h1>AI That Closes Deals</h1>
+  <p>This is not a chatbot. This is a sales AI.</p>
 
-function analyzeIntent(input) {
-  input = input.toLowerCase();
+  <div id="chat"></div>
 
-  if (input.includes("acne")) return "acne";
-  if (input.includes("aging")) return "aging";
-  if (input.includes("price") || input.includes("cheap")) return "price";
-  if (input.includes("not sure")) return "hesitation";
+  <input id="input" placeholder="Type here..." />
+  <button onclick="send()">Send</button>
 
-  return "general";
-}
+  <script>
+    let state = "hook";
 
-function send() {
-  const inputEl = document.getElementById("input");
-  const chat = document.getElementById("chat");
-  const input = inputEl.value.trim();
-  if (!input) return;
+    function analyzeIntent(input) {
+      input = input.toLowerCase();
 
-  const intent = analyzeIntent(input);
-  let reply = "";
+      if (input.includes("acne")) return "acne";
+      if (input.includes("aging")) return "aging";
+      if (input.includes("price") || input.includes("cheap")) return "price";
+      if (input.includes("not sure")) return "hesitation";
 
-  // 🔥 关键：第一句话就利用用户输入
-  if (state === "hook") {
-    if (intent === "acne") {
-      reply = "Got it — acne is one of the most common issues. Has it been ongoing for a while?";
-      state = "pain";
-    } else if (intent === "aging") {
-      reply = "Understood — most people notice aging signs getting worse over time. Is that what you're seeing?";
-      state = "pain";
-    } else {
-      reply = "Got it — what’s the main thing you want to improve?";
-      state = "qualify";
+      return "general";
     }
-  }
 
-  else if (state === "qualify") {
-    reply = "Is your priority faster results, better quality, or lower price?";
-    state = "pain";
-  }
+    function send() {
+      const inputEl = document.getElementById("input");
+      const chat = document.getElementById("chat");
+      const input = inputEl.value.trim();
 
-  else if (state === "pain") {
-    reply = "That’s exactly what most people experience before they find the right solution.";
-    state = "solution";
-  }
+      if (!input) return;
 
-  else if (state === "solution") {
-    reply = "Based on what you told me, this is what most people choose — it targets the root cause and works quickly.";
-    state = "objection";
-  }
+      const intent = analyzeIntent(input);
+      let reply = "";
 
-  else if (state === "objection") {
-    if (intent === "price") {
-      reply = "I get that — but most people realize it's cheaper than trying multiple products that don’t work.";
-    } else {
-      reply = "That’s exactly what others thought before they tried it.";
+      if (state === "hook") {
+        if (intent === "acne") {
+          reply = "Got it — acne is very common. Has it been ongoing?";
+          state = "pain";
+        } else if (intent === "aging") {
+          reply = "Understood — are you trying to improve fine lines or overall skin firmness?";
+          state = "pain";
+        } else {
+          reply = "Got it — what’s the main thing you want to improve?";
+          state = "qualify";
+        }
+      } else if (state === "qualify") {
+        reply = "Is it more about results, price, or speed?";
+        state = "pain";
+      } else if (state === "pain") {
+        reply = "That usually gets worse if ignored. Has that been happening?";
+        state = "solution";
+      } else if (state === "solution") {
+        reply = "Based on what you said, this is what most people choose.";
+        state = "close";
+      } else {
+        reply = "👉 Best option here: https://example.com";
+      }
+
+      chat.innerHTML += "<p><b>You:</b> " + input + "</p>";
+      chat.innerHTML += "<p><b>AI:</b> " + reply + "</p>";
+
+      inputEl.value = "";
     }
-    state = "close";
-  }
-
-  else {
-    reply = "👉 This is the best option for you: https://example.com";
-  }
-
-  chat.innerHTML += "<p><b>You:</b> " + input + "</p>";
-  chat.innerHTML += "<p><b>AI:</b> " + reply + "</p>";
-
-  inputEl.value = "";
-}
-</script>
+  </script>
+</body>
+</html>
