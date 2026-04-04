@@ -1,12 +1,72 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Test Page</title>
+  <title>AI That Closes Deals</title>
 </head>
 <body>
-  <h1>It works</h1>
-  <p>If you can see this, GitHub Pages is fine.</p>
+
+<h1>AI That Closes Deals</h1>
+<p>This is not a chatbot. This is a sales AI.</p>
+
+<div id="chat"></div>
+
+<input id="input" placeholder="Tell me what you need..." />
+<button onclick="send()">Send</button>
+
+<script>
+let state = "hook";
+
+function analyzeIntent(input) {
+  input = input.toLowerCase();
+
+  if (input.includes("acne")) return "acne";
+  if (input.includes("aging")) return "aging";
+  if (input.includes("price") || input.includes("cheap")) return "price";
+  if (input.includes("not sure")) return "hesitation";
+
+  return "general";
+}
+
+function send() {
+  const inputEl = document.getElementById("input");
+  const chat = document.getElementById("chat");
+  const input = inputEl.value.trim();
+
+  if (!input) return;
+
+  const intent = analyzeIntent(input);
+  let reply = "";
+
+  if (state === "hook") {
+    reply = "Most people here want to solve something fast — what are you looking for?";
+    state = "qualify";
+  }
+
+  else if (state === "qualify") {
+    reply = "Is it more about results, price, or speed?";
+    state = "pain";
+  }
+
+  else if (state === "pain") {
+    reply = "That usually gets worse if ignored. Has that been happening?";
+    state = "solution";
+  }
+
+  else if (state === "solution") {
+    reply = "Based on what you said, this is what most people choose.";
+    state = "close";
+  }
+
+  else {
+    reply = "👉 Best option here: https://yourstore.com";
+  }
+
+  chat.innerHTML += "<p><b>You:</b> " + input + "</p>";
+  chat.innerHTML += "<p><b>AI:</b> " + reply + "</p>";
+
+  inputEl.value = "";
+}
+</script>
+
 </body>
 </html>
