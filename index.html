@@ -1,72 +1,46 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>AI That Closes Deals</title>
-</head>
-<body>
-
-<h1>AI That Closes Deals</h1>
-<p>This is not a chatbot. This is a sales AI.</p>
-
-<div id="chat"></div>
-
-<input id="input" placeholder="Tell me what you need..." />
-<button onclick="send()">Send</button>
-
 <script>
-let state = "hook";
-
 function analyzeIntent(input) {
-  input = input.toLowerCase();
+  input = input.toLowerCase();
 
-  if (input.includes("acne")) return "acne";
-  if (input.includes("aging")) return "aging";
-  if (input.includes("price") || input.includes("cheap")) return "price";
-  if (input.includes("not sure")) return "hesitation";
+  // Acne
+  if (
+    input.includes("acne") ||
+    input.includes("痘") ||
+    input.includes("痘痘")
+  ) return "acne";
 
-  return "general";
+  // Anti-aging
+  if (
+    input.includes("aging") ||
+    input.includes("抗老") ||
+    input.includes("wrinkle")
+  ) return "aging";
+
+  // Price
+  if (
+    input.includes("price") ||
+    input.includes("贵") ||
+    input.includes("便宜")
+  ) return "price";
+
+  return "general";
 }
 
-function send() {
-  const inputEl = document.getElementById("input");
-  const chat = document.getElementById("chat");
-  const input = inputEl.value.trim();
+async function fakeAI(input) {
+  const intent = analyzeIntent(input);
 
-  if (!input) return;
+  if (intent === "acne") {
+    return "Acne issues usually get worse without proper care. 痘痘如果不处理，会越来越严重。";
+  }
 
-  const intent = analyzeIntent(input);
-  let reply = "";
+  if (intent === "price") {
+    return "Price matters—but效果更重要。便宜的东西很多时候更贵（因为没效果）。";
+  }
 
-  if (state === "hook") {
-    reply = "Most people here want to solve something fast — what are you looking for?";
-    state = "qualify";
-  }
+  if (intent === "aging") {
+    return "Anti-aging需要长期策略，不是一个产品能解决的。";
+  }
 
-  else if (state === "qualify") {
-    reply = "Is it more about results, price, or speed?";
-    state = "pain";
-  }
-
-  else if (state === "pain") {
-    reply = "That usually gets worse if ignored. Has that been happening?";
-    state = "solution";
-  }
-
-  else if (state === "solution") {
-    reply = "Based on what you said, this is what most people choose.";
-    state = "close";
-  }
-
-  else {
-    reply = "👉 Best option here: https://yourstore.com";
-  }
-
-  chat.innerHTML += "<p><b>You:</b> " + input + "</p>";
-  chat.innerHTML += "<p><b>AI:</b> " + reply + "</p>";
-
-  inputEl.value = "";
+  return "Tell me more about your situation — 我帮你分析最合适的方案。";
 }
 </script>
-
-</body>
-</html>
