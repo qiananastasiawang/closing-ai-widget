@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Closing AI Demo</title>
+</head>
+<body>
+
+<h1>AI That Closes Deals</h1>
+<p>This is not a chatbot. This is a sales AI.</p>
+
+<div id="chat"></div>
+
+<input id="input" placeholder="Type here..." />
+<button onclick="send()">Send</button>
+
+<script>
+let state = "hook";
+
+function send() {
+  const input = document.getElementById("input").value;
+  const chat = document.getElementById("chat");
+
+  let reply = "";
+
+  if (state === "hook") {
+    reply = "Most people here want to solve something fast — what are you looking for?";
+    state = "qualify";
+  } else if (state === "qualify") {
+    reply = "Got it — is it more about price or quality?";
+    state = "pain";
+  } else if (state === "pain") {
+    reply = "That usually becomes worse if ignored — is that happening?";
+    state = "solution";
+  } else if (state === "solution") {
+    reply = "Based on what you said, this is the best option.";
+    state = "close";
+  } else {
+    reply = "👉 Click here to get it now: https://example.com";
+  }
+
+  chat.innerHTML += "<p><b>You:</b> " + input + "</p>";
+  chat.innerHTML += "<p><b>AI:</b> " + reply + "</p>";
+
+  document.getElementById("input").value = "";
+}
+</script>
+
+</body>
+</html>
