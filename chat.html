@@ -1,66 +1,164 @@
-<script>
-var memory = {
-  problem: null,
-  step: 0
-};
-
-document.getElementById("sendBtn").onclick = function () {
-
-  var inputEl = document.getElementById("input");
-  var chat = document.getElementById("chat");
-  var inputRaw = inputEl.value.trim();
-
-  if (!inputRaw) return;
-
-  chat.innerHTML += "<p><b>You:</b> " + inputRaw + "</p>";
-
-  var input = inputRaw.toLowerCase();
-  var reply = "";
-
-  // STEP 0: detect problem
-  if (!memory.problem) {
-    if (input.includes("acne")) {
-      memory.problem = "acne";
-    } else if (input.includes("aging") || input.includes("wrinkle")) {
-      memory.problem = "aging";
-    } else {
-      memory.problem = "general";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI That Closes Deals</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      color: #111;
+      text-align: center;
     }
 
-    memory.step = 1;
+    .container {
+      max-width: 800px;
+      margin: 60px auto;
+      padding: 20px;
+    }
 
-    reply = "Most people come here after wasting months on the wrong products. What are you trying to fix?";
+    h1 {
+      font-size: 42px;
+      margin-bottom: 10px;
+    }
 
-  }
+    p.subtitle {
+      font-size: 20px;
+      color: #555;
+      margin-bottom: 30px;
+    }
 
-  // STEP 1 → 2
-  else if (memory.step === 1) {
-    memory.step = 2;
+    #chat {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      min-height: 220px;
+      text-align: left;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+      margin-bottom: 20px;
+    }
 
-    reply = "That’s exactly how it starts. The longer you wait, the harder it becomes.";
-  }
+    .input-row {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
 
-  // STEP 2 → 3
-  else if (memory.step === 2) {
-    memory.step = 3;
+    input {
+      width: 60%;
+      min-width: 260px;
+      padding: 14px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+    }
 
-    reply = "We see this all the time—people only improve once they switch to the right approach.";
-  }
+    button {
+      padding: 14px 22px;
+      font-size: 16px;
+      font-weight: bold;
+      background: black;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
 
-  // STEP 3 → 4
-  else if (memory.step === 3) {
-    memory.step = 4;
+    button:hover {
+      background: #333;
+    }
 
-    reply = "I can show you what actually works so you don’t waste time guessing.";
-  }
+    .back-link {
+      display: inline-block;
+      margin-top: 20px;
+      color: #333;
+      text-decoration: none;
+      font-size: 14px;
+    }
 
-  // STEP 4 → 5 (CLOSE)
-  else {
-    reply = "👉 This is what most people use to fix this fast:<br><a href='https://yourstore.com' target='_blank'>See the solution</a>";
-  }
+    .back-link:hover {
+      text-decoration: underline;
+    }
 
-  chat.innerHTML += "<p><b>AI:</b> " + reply + "</p>";
+    a.solution-link {
+      color: #111;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
 
-  inputEl.value = "";
-};
-</script>
+  <div class="container">
+    <h1>AI That Closes Deals</h1>
+    <p class="subtitle">Tell me what you need. I’ll guide you to the best next step.</p>
+
+    <div id="chat">
+      <p><b>AI:</b> What are you trying to fix today?</p>
+    </div>
+
+    <div class="input-row">
+      <input id="input" type="text" placeholder="Example: I have acne">
+      <button id="sendBtn">Send</button>
+    </div>
+
+    <a class="back-link" href="index.html">← Back to home</a>
+  </div>
+
+  <script>
+    var memory = {
+      problem: null,
+      step: 0
+    };
+
+    document.getElementById("sendBtn").onclick = function () {
+      var inputEl = document.getElementById("input");
+      var chat = document.getElementById("chat");
+      var inputRaw = inputEl.value.trim();
+
+      if (!inputRaw) {
+        return;
+      }
+
+      var input = inputRaw.toLowerCase();
+      var reply = "";
+
+      chat.innerHTML += "<p><b>You:</b> " + inputRaw + "</p>";
+
+      if (memory.problem === null) {
+        if (input.indexOf("acne") !== -1 || input.indexOf("pimple") !== -1 || input.indexOf("breakout") !== -1) {
+          memory.problem = "acne";
+        } else if (input.indexOf("aging") !== -1 || input.indexOf("wrinkle") !== -1 || input.indexOf("fine lines") !== -1) {
+          memory.problem = "aging";
+        } else {
+          memory.problem = "general";
+        }
+
+        memory.step = 1;
+        reply = "Most people come here after wasting months on the wrong products. What are you trying to fix?";
+      }
+      else if (memory.step === 1) {
+        memory.step = 2;
+        reply = "That is exactly how it starts. The longer you wait, the harder it becomes.";
+      }
+      else if (memory.step === 2) {
+        memory.step = 3;
+        reply = "We see this all the time. People only improve once they switch to the right approach.";
+      }
+      else if (memory.step === 3) {
+        memory.step = 4;
+        reply = "I can show you what actually works so you do not waste time guessing.";
+      }
+      else {
+        reply = "This is what most people use to fix this fast: <a class='solution-link' href='https://example.com' target='_blank'>See the solution</a>";
+      }
+
+      chat.innerHTML += "<p><b>AI:</b> " + reply + "</p>";
+      inputEl.value = "";
+    };
+  </script>
+
+</body>
+</html>
