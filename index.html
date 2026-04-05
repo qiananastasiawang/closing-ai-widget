@@ -1,46 +1,58 @@
 <script>
-function analyzeIntent(input) {
-  input = input.toLowerCase();
+let memory = {
+  problem: null,
+  stage: "start"
+};
 
-  // Acne
-  if (
-    input.includes("acne") ||
-    input.includes("痘") ||
-    input.includes("痘痘")
-  ) return "acne";
+function send() {
+  const inputEl = document.getElementById("input");
+  const chat = document.getElementById("chat");
+  const input = inputEl.value.trim().toLowerCase();
 
-  // Anti-aging
-  if (
-    input.includes("aging") ||
-    input.includes("抗老") ||
-    input.includes("wrinkle")
-  ) return "aging";
+  if (!input) return;
 
-  // Price
-  if (
-    input.includes("price") ||
-    input.includes("贵") ||
-    input.includes("便宜")
-  ) return "price";
+  chat.innerHTML += "<p><b>You:</b> " + input + "</p>";
 
-  return "general";
-}
+  let reply = "";
 
-async function fakeAI(input) {
-  const intent = analyzeIntent(input);
-
-  if (intent === "acne") {
-    return "Acne issues usually get worse without proper care. 痘痘如果不处理，会越来越严重。";
+  // Step 1: Identify problem
+  if (!memory.problem) {
+    if (input.includes("acne")) {
+      memory.problem = "acne";
+      reply = "Got it. Is it something that just started, or has it been recurring?";
+    } else if (input.includes("aging") || input.includes("wrinkle")) {
+      memory.problem = "aging";
+      reply = "Are you more concerned about wrinkles, or skin firmness?";
+    } else {
+      reply = "What are you trying to improve—skin issues or just exploring options?";
+    }
   }
 
-  if (intent === "price") {
-    return "Price matters—but效果更重要。便宜的东西很多时候更贵（因为没效果）。";
+  // Step 2: Pain amplification
+  else if (memory.stage === "start") {
+    memory.stage = "pain";
+    reply = "Most people ignore this early, and it usually gets worse over time.";
   }
 
-  if (intent === "aging") {
-    return "Anti-aging需要长期策略，不是一个产品能解决的。";
+  // Step 3: Trust
+  else if (memory.stage === "pain") {
+    memory.stage = "solution";
+    reply = "We see this all the time—clients only improve after using the right method.";
   }
 
-  return "Tell me more about your situation — 我帮你分析最合适的方案。";
+  // Step 4: Offer solution
+  else if (memory.stage === "solution") {
+    memory.stage = "close";
+    reply = "I can show you the exact solution most people here use—it saves a lot of trial and error.";
+  }
+
+  // Step 5: Close
+  else {
+    reply = "👉 This is the most effective option right now:<br><a href='https://yourstore.com' target='_blank'>View Product</a>";
+  }
+
+  chat.innerHTML += "<p><b>AI:</b> " + reply + "</p>";
+
+  inputEl.value = "";
 }
 </script>
