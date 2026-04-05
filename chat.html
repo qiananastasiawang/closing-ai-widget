@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI That Closes Deals</title>
+</head>
+<body>
+  <h1>AI That Closes Deals</h1>
+  <p>This is not a chatbot. This is a sales AI.</p>
+
+  <div id="chat"></div>
+
+  <input id="input" type="text" placeholder="Tell me what you need..." />
+  <button id="sendBtn">Send</button>
+
+  <script>
+    var memory = {
+      problem: null,
+      stage: "start"
+    };
+
+    document.getElementById("sendBtn").onclick = function () {
+      var inputEl = document.getElementById("input");
+      var chat = document.getElementById("chat");
+      var inputRaw = inputEl.value.trim();
+
+      if (!inputRaw) {
+        return;
+      }
+
+      var input = inputRaw.toLowerCase();
+      var reply = "";
+
+      chat.innerHTML += "<p><b>You:</b> " + inputRaw + "</p>";
+
+      // Step 1: identify problem
+      if (!memory.problem) {
+        if (input.indexOf("acne") !== -1) {
+          memory.problem = "acne";
+        } else if (input.indexOf("aging") !== -1 || input.indexOf("wrinkle") !== -1) {
+          memory.problem = "aging";
+        }
+
+        reply = "Most people come here after wasting months on the wrong products. What are you trying to fix?";
+      }
+
+      // Step 2: pain
+      else if (memory.stage === "start") {
+        memory.stage = "pain";
+        reply = "That is exactly how it starts. The longer you wait, the harder it becomes.";
+      }
+
+      // Step 3: trust
+      else if (memory.stage === "pain") {
+        memory.stage = "solution";
+        reply = "We see this all the time. People only improve once they switch to the right approach.";
+      }
+
+      // Step 4: solution
+      else if (memory.stage === "solution") {
+        memory.stage = "close";
+        reply = "I can show you what actually works so you do not waste time guessing.";
+      }
+
+      // Step 5: close
+      else {
+        reply = "This is what most people use to fix this fast: <a href='https://example.com' target='_blank'>See the solution</a>";
+      }
+
+      chat.innerHTML += "<p><b>AI:</b> " + reply + "</p>";
+      inputEl.value = "";
+    };
+  </script>
+</body>
+</html>
